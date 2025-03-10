@@ -32,4 +32,4 @@ echo "Ativando o serviço para $USER..."
 sudo systemctl enable monitor@$USER
 sudo systemctl start monitor@$USER
 
-echo "Serviço monitor@$USER criado e iniciado com sucesso! 🚀"
+echo "✅Serviço monitor@$USER criado e iniciado com sucesso!"
