@@ -2,7 +2,7 @@
 
 # Configuração
 NOME_PROCESSO="index.py" # Nome do processo Python
-CAMINHO_APP="$HOME/monitorPython/ProjetoBalanca"
+CAMINHO_APP="$HOME/BalancaPubRepo/index"
 CMD_INICIAR="python3 index.py" # Comando para iniciar a aplicação
 INTERVALO=3600 # Tempo (segundos) entre verificações
 

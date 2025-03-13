@@ -2,7 +2,7 @@
 
 USER=$(logname)
 SERVICE_FILE="/etc/systemd/system/monitor@.service"
-SCRIPT_PATH="/home/$USER/monitorPython/ProjetoBalanca/scripts/_monitor.sh"
+SCRIPT_PATH="/home/$USER/BalancaPubRepo/scripts/_monitor.sh"
 
 sudo chmod +x $SCRIPT_PATH
 
