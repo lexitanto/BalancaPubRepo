@@ -7,13 +7,15 @@ from datetime import datetime
 from connection import database_connection
 
 #Constantes
-NUMERO_EQUIPAMENTO = ''
-USER = ''
+CPU_NUMBER = ''
+NUMERO_SERIAL = ''
+DEVICE_MODEL = ''
+SERIAL_FILE = '/etc/device_serial'
 MAX_TENTATIVAS = 5        
 INTERVALO_RETRY = 60
 PROLIFIC_PADRAO = 'usb-Prolific_Technology_Inc._USB-Serial_Controller'
 DEV_PATH = "/dev/serial/by-id"
-URL_SERVER = 'https://erp.sgtrack.com.br/IoT/Balanca'
+URL_SERVER = 'https://9271-170-80-64-72.ngrok-free.app/IoT/Balanca'
 URL_PAYLOAD = '/payload'
 URL_EQUIPAMENTO = '/check_equipamento'
 DB = database_connection()
@@ -21,20 +23,44 @@ DB = database_connection()
 
 class app_serial():
     def __init__(self):
-        self.serial_port = serial.Serial()        
+        self.serial_port = serial.Serial()   
+        self.check_equipamento()
+        self.open_serial()
         
     def check_equipamento(self):
-        global USER
-        global NUMERO_EQUIPAMENTO
+        global NUMERO_SERIAL
+        global CPU_NUMBER
+        global DEVICE_MODEL
 
-        USER = self.get_user()
-        NUMERO_EQUIPAMENTO = self.get_rpi_serial()
+        if os.path.exists(SERIAL_FILE):
+            # Se o arquivo existe, lê o número serial armazenado
+            with open(SERIAL_FILE, 'r') as f:
+                NUMERO_EQUIPAMENTO = f.read().strip()
+            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Numero do equipamento carregado: {NUMERO_EQUIPAMENTO}")
+        else:
+            CPU_NUMBER = self.get_rpi_serial()
+            DEVICE_MODEL = self.get_model()
+            if CPU_NUMBER:
+                try:
+                    string_dados = f"{CPU_NUMBER};{DEVICE_MODEL}"
+                    texto_byte = bytes(string_dados, 'utf-8')
+                    response = self.POST_to_server(texto_byte, URL_EQUIPAMENTO)
+                    NUMERO_EQUIPAMENTO = response.text.strip()
 
-        string_dados = f"{USER};{NUMERO_EQUIPAMENTO}"
-        texto_byte = bytes(string_dados, 'utf-8')
-        self.POST_to_server(texto_byte, URL_EQUIPAMENTO)
+                    if NUMERO_EQUIPAMENTO:
+                        with open(SERIAL_FILE, 'w') as f:
+                            f.write(NUMERO_EQUIPAMENTO)
+                        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Novo número serial obtido e salvo: {NUMERO_EQUIPAMENTO}")
+                    else:
+                        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro: Nenhum número serial retornado pela API.")
 
-    def get_user(self):
+                except requests.RequestException as e:
+                    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro ao fazer a requisição para a API: {e}")
+
+            else:
+                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro: Não foi possível obter o número serial da CPU.")
+
+    def get_equipamento(self):
         return getpass.getuser()
 
     def get_rpi_serial(self):        
@@ -42,6 +68,17 @@ class app_serial():
             with open("/proc/cpuinfo", "r") as f:
                 for line in f:
                     if line.startswith("Serial"):
+                        return line.strip().split(":")[1].strip()
+
+        except Exception as e:
+            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro ao ler o número de série: {e}")
+            return None
+        
+    def get_model(self):
+        try:
+            with open("/proc/cpuinfo", "r") as f:
+                for line in f:
+                    if line.startswith("Model"):
                         return line.strip().split(":")[1].strip()
 
         except Exception as e:
@@ -109,7 +146,7 @@ class app_serial():
         evento_balanca.Peso_total = linha[44:51].lstrip('0')
         evento_balanca.DataEvento = data_Evento.strftime("%Y-%m-%d %H:%M:%S")
                         
-        string_dados =(f'{USER};{evento_balanca.Cod_identificador};'
+        string_dados =(f'{NUMERO_SERIAL};{evento_balanca.Cod_identificador};'
                        f'{evento_balanca.DataEvento};{evento_balanca.Peso_atual};'
                        f'{evento_balanca.Peso_total}')
                         
@@ -150,7 +187,7 @@ class app_serial():
             data_Evento = datetime.now()
             evento_balanca.DataEvento = data_Evento.strftime("%Y-%m-%d %H:%M:%S")
 
-            string_dados = ( f"{USER};{evento_balanca.Cod_identificador};"
+            string_dados = ( f"{NUMERO_SERIAL};{evento_balanca.Cod_identificador};"
                              f"{evento_balanca.DataEvento};{evento_balanca.Peso_atual};"
                              f"{evento_balanca.Peso_total};{evento_balanca.Peso_maximo};"
                              f"{evento_balanca.Total_de_pesagens};{evento_balanca.Id_Pesagem};"
@@ -221,7 +258,7 @@ class app_serial():
 
                 if response.ok:
                     print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - ✅Sucesso no POST!      -> {json_data}")
-                    return True
+                    return json_data
                 else:
                     tentativas += 1
                     print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - ❌Erro: {response.status_code}      -> {json_data}")
