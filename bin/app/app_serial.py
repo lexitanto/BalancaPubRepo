@@ -45,7 +45,8 @@ class app_serial():
                     string_dados = f"{CPU_NUMBER};{DEVICE_MODEL}"
                     texto_byte = bytes(string_dados, 'utf-8')
                     response = self.POST_to_server(texto_byte, URL_EQUIPAMENTO)
-                    NUMERO_EQUIPAMENTO = response.get("equipamento")
+                    if response:
+                        NUMERO_EQUIPAMENTO = response.get("equipamento")
 
                     if NUMERO_EQUIPAMENTO:
                         with open(SERIAL_FILE, 'w') as f:
@@ -257,7 +258,7 @@ class app_serial():
                 json_data = response.json() if response.headers.get("Content-Type") == "application/json" else None
 
                 if response.ok:
-                    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - ✅Sucesso no POST!      -> {json_data}")
+                    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - ✅Sucesso no POST!      -> {response.json()}")
                     return json_data
                 else:
                     tentativas += 1
