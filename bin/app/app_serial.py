@@ -45,7 +45,7 @@ class app_serial():
                     string_dados = f"{CPU_NUMBER};{DEVICE_MODEL}"
                     texto_byte = bytes(string_dados, 'utf-8')
                     response = self.POST_to_server(texto_byte, URL_EQUIPAMENTO)
-                    NUMERO_EQUIPAMENTO = response.text.strip()
+                    NUMERO_EQUIPAMENTO = response.get("equipamento")
 
                     if NUMERO_EQUIPAMENTO:
                         with open(SERIAL_FILE, 'w') as f:
