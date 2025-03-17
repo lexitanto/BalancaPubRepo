@@ -48,12 +48,12 @@ class app_serial():
                     if response:
                         NUMERO_EQUIPAMENTO = response.get("equipamento")
 
-                    if NUMERO_EQUIPAMENTO:
-                        with open(SERIAL_FILE, 'w') as f:
-                            f.write(NUMERO_EQUIPAMENTO)
-                        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Novo número serial obtido e salvo: {NUMERO_EQUIPAMENTO}")
-                    else:
-                        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro: Nenhum número serial retornado pela API.")
+                        if NUMERO_EQUIPAMENTO:
+                            with open(SERIAL_FILE, 'w') as f:
+                                f.write(NUMERO_EQUIPAMENTO)
+                            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Novo número serial obtido e salvo: {NUMERO_EQUIPAMENTO}")
+                        else:
+                            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro: Nenhum número serial retornado pela API.")
 
                 except requests.RequestException as e:
                     print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro ao fazer a requisição para a API: {e}")
@@ -255,7 +255,7 @@ class app_serial():
                 headers = {"Content-Type": "application/octet-stream"}
                 endpoint = URL_SERVER + api_url
                 response = requests.post(endpoint, data=data, headers=headers)
-                json_data = response.json() if response.headers.get("Content-Type") == "application/json" else None
+                json_data = response.json()
 
                 if response.ok:
                     print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - ✅Sucesso no POST!      -> {response.json()}")
