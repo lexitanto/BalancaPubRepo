@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CMD_INICIAR="python3 /opt/BalancaPubRepo/bin/index.py"
+CMD_INICIAR="python3 /opt/BalancaPubRepo/bin/app/index.py"
 CAMINHO_APP="/opt/BalancaPubRepo"  
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Verificando se há alterações no repositório..." | tee -a /tmp/monitor.log
