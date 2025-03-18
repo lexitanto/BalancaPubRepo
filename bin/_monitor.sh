@@ -2,6 +2,11 @@
 
 CMD_INICIAR="python3 /opt/BalancaPubRepo/bin/index.py"
 
+until ping -c 1 github.com &>/dev/null; do
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Esperando por conexão com a internet..." | tee -a /tmp/monitor.log
+    sleep 5
+done
+
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Verificando e atualizando o repositório..." | tee -a /tmp/monitor.log
 
 # Atualiza o repositório
