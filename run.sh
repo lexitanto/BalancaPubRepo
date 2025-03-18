@@ -50,9 +50,12 @@ EOF
 
 sudo systemctl daemon-reload
 sudo systemctl enable monitor.service
-sudo systemctl start monitor.service
 sudo systemctl enable wifi-setup-monitor.service
-sudo systemctl start wifi-setup-monitor.service
 
 echo "✅ Serviço _monitor.* criado e iniciado com sucesso!"
 echo "✅ Serviço _wifi-setup-monitor.* criado e iniciado com sucesso!"
+
+echo "O sistema será reiniciado agora!"
+sleep 3
+
+sudo reboot
