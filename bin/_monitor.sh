@@ -1,41 +1,24 @@
 #!/bin/bash
 
-# Configuração
-NOME_PROCESSO="index.py" # Nome do processo Python
-CAMINHO_APP="$HOME/BalancaPubRepo/index"
+# Caminho para o repositório
+CAMINHO_APP="/opt/BalancaPubRepo"
 CMD_INICIAR="python3 index.py" # Comando para iniciar a aplicação
-INTERVALO=3600 # Tempo (segundos) entre verificações
 
-> /tmp/monitor.log
+# Navega até o diretório do repositório
+cd "$CAMINHO_APP" || exit
 
-# Espera até que a conexão com a internet esteja disponível
-while ! ping -c 1 8.8.8.8 &> /dev/null; do
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - Sem conexão. Tentando novamente em 3 segundos..." | tee -a /tmp/monitor.log
-    sleep 3
-done
-echo "$(date '+%Y-%m-%d %H:%M:%S') - Conectado à internet!" | tee -a /tmp/monitor.log
+# Atualiza o repositório remoto sem fazer alterações no local
+echo "$(date '+%Y-%m-%d %H:%M:%S') - Verificando se há alterações no repositório..." | tee -a /tmp/monitor.log
+git fetch origin
 
-# Loop principal para verificar o status do processo
-while :; do
-    # Verifica se a aplicação está rodando
-    if ! pgrep -f "$NOME_PROCESSO" > /dev/null; then
-        echo "$(date '+%Y-%m-%d %H:%M:%S') - Aplicação caiu! Reiniciando..." | tee -a /tmp/monitor.log
-        
-        # Navega até o diretório da aplicação
-        cd "$CAMINHO_APP" || exit
+# Verifica se há mudanças na branch remota em relação à local
+if git diff --quiet origin/main; then
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Nenhuma alteração no código." | tee -a /tmp/monitor.log
+else
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Atualizando código..." | tee -a /tmp/monitor.log
+    git pull origin main
+fi
 
-        # Atualiza o código
-        echo "$(date '+%Y-%m-%d %H:%M:%S') - Atualizando código..." | tee -a /tmp/monitor.log
-        git pull origin main
-        
-        # Mata qualquer processo anterior para evitar duplicatas
-        pkill -f "$NOME_PROCESSO"
-        
-        # Reinicia a aplicação
-        echo "$(date '+%Y-%m-%d %H:%M:%S') - Iniciando aplicação..." | tee -a /tmp/monitor.log
-        nohup $CMD_INICIAR 2>&1 >> /tmp/monitor.log 2>&1 &
-    fi
-
-    # Espera o intervalo definido antes de verificar novamente
-    sleep "$INTERVALO"
-done
+# Inicia a aplicação
+echo "$(date '+%Y-%m-%d %H:%M:%S') - Iniciando aplicação..." | tee -a /tmp/monitor.log
+sudo nohup $CMD_INICIAR 2>&1 >> /tmp/monitor.log 2>&1 &

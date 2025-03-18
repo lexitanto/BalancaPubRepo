@@ -9,7 +9,8 @@ sudo chmod +x "$MONITOR_SCRIPT_PATH"
 sudo tee "$MONITOR_SERVICE" > /dev/null <<EOF
 [Unit]
 Description=Iniciar o aplicativo no boot do sistema (root)
-After=network.target
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple
@@ -53,5 +54,5 @@ sudo systemctl start monitor.service
 sudo systemctl enable wifi-setup-monitor.service
 sudo systemctl start wifi-setup-monitor.service
 
-echo "✅Serviço _monitor.* criado e iniciado com sucesso!"
-echo "✅Serviço _wifi-setup-monitor.* criado e iniciado com sucesso!"
+echo "✅ Serviço _monitor.* criado e iniciado com sucesso!"
+echo "✅ Serviço _wifi-setup-monitor.* criado e iniciado com sucesso!"
