@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPO_PATH="/opt/BalancaPubRepo"
-CMD_INICIAR="python3 $REPO_PATH/bin/index.py"
+CMD_INICIAR="python3 $REPO_PATH/bin/app/index.py"
 
 until ping -c 1 github.com &>/dev/null; do
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Esperando por conexão com a internet..." | tee -a /tmp/monitor.log
@@ -18,4 +18,4 @@ sudo git -C $REPO_PATH reset --hard origin/main
 
 # Reinicia a aplicação
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Iniciando aplicação..." | tee -a /tmp/monitor.log
-sudo nohup $CMD_INICIAR 2>&1 >> /tmp/monitor.log 2>&1 &
+sudo $CMD_INICIAR
