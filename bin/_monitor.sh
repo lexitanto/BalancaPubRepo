@@ -1,18 +1,15 @@
 #!/bin/bash
 
-CMD_INICIAR="python3 /opt/BalancaPubRepo/bin/app/index.py"
-CAMINHO_APP="/opt/BalancaPubRepo"  
+CMD_INICIAR="python3 /opt/BalancaPubRepo/bin/index.py"
 
-echo "$(date '+%Y-%m-%d %H:%M:%S') - Verificando se há alterações no repositório..." | tee -a /tmp/monitor.log
+echo "$(date '+%Y-%m-%d %H:%M:%S') - Verificando e atualizando o repositório..." | tee -a /tmp/monitor.log
 
-sudo git -C "$CAMINHO_APP" fetch origin
+# Atualiza o repositório
+sudo git fetch origin
 
-if git -C "$CAMINHO_APP" diff --quiet origin/main; then
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - Nenhuma alteração no código." | tee -a /tmp/monitor.log
-else
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - Atualizando código..." | tee -a /tmp/monitor.log
-    sudo git -C "$CAMINHO_APP" pull origin main
-fi
+# Força a atualização do repositório local para o estado remoto, ignorando quaisquer mudanças locais
+sudo git reset --hard origin/main
 
+# Reinicia a aplicação
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Iniciando aplicação..." | tee -a /tmp/monitor.log
 sudo nohup $CMD_INICIAR 2>&1 >> /tmp/monitor.log 2>&1 &
