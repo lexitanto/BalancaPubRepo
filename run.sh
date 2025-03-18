@@ -8,18 +8,17 @@ sudo chmod +x "$MONITOR_SCRIPT_PATH"
 
 sudo tee "$MONITOR_SERVICE" > /dev/null <<EOF
 [Unit]
-Description=Iniciar o aplicativo no boot do sistema (root)
+Description=Iniciar o aplicativo no boot do sistema
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/bin/bash $MONITOR_SCRIPT_PATH
-WorkingDirectory=/opt/BalancaPubRepo/bin
+ExecStart=$MONITOR_SCRIPT_PATH
+WorkingDirectory=/opt/BalancaPubRepo/bin/
 Restart=always
-User=root
-StandardOutput=append:/tmp/monitor.log
-StandardError=append:/tmp/monitor_error.log
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
