@@ -7,6 +7,7 @@ DEVICE="/dev/$1"
 
 sudo systemctl daemon-reload
 sudo mount -o ro "$DEVICE" "$MOUNT_POINT"
+echo "Dispositivo montado."
 if [ $? -ne 0 ]; then
     echo "Erro ao montar $DEVICE"
     exit 1
