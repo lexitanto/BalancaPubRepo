@@ -1,6 +1,7 @@
 #!/bin/bash
 
 MOUNT_POINT="/mnt/usb_wifi"
+CONFIG_FILE="wifi_setup.txt"
 DEVICE="/dev/$1"
 [ ! -d "$MOUNT_POINT" ] && mkdir -p "$MOUNT_POINT"
 
