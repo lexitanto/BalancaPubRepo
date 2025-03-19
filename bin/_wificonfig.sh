@@ -11,7 +11,7 @@ sudo mkdir -p "$MOUNT_POINT"
 # Monitorar dispositivos USB
 while true; do
     # Esperar por um pendrive
-    DEVICE=$(lsblk -o NAME,MOUNTPOINT | grep -E 'sd[b-z]' | awk '{print $1}' | head -n 1)
+    DEVICE=$(lsblk -o NAME,MOUNTPOINT | grep -E 'sd[a-z]' | awk '{print $1}' | head -n 1)
     
     if [[ -n "$DEVICE" ]]; then
         echo "Pendrive detectado: /dev/$DEVICE"
