@@ -5,7 +5,7 @@ DEVICE="/dev/$1"
 [ ! -d "$MOUNT_POINT" ] && mkdir -p "$MOUNT_POINT"
 
 
-sudo mount -o ro /dev/"$DEVICE" "$MOUNT_POINT"
+sudo mount -o ro "$DEVICE" "$MOUNT_POINT"
 if [ $? -ne 0 ]; then
     echo "Erro ao montar $DEVICE"
     exit 1
