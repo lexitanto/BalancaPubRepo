@@ -58,5 +58,7 @@ EOF
         sleep 10
     fi
 
+    echo "sleeping for 2 sec"
     sleep 2
+    
 done
