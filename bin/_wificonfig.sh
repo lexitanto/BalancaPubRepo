@@ -4,7 +4,8 @@ MOUNT_POINT="/mnt/usb_wifi"
 CONFIG_FILE="wifi_setup.txt"
 WPA_SUPPLICANT="/etc/wpa_supplicant/wpa_supplicant.conf"
 
-# Criar diretório de montagem
+echo "✅ Wifi_setup iniciado"
+
 sudo mkdir -p "$MOUNT_POINT"
 
 # Monitorar dispositivos USB
