@@ -84,8 +84,7 @@ class app_serial():
             return None
 
     def find_profilic(self):
-        if not os.path.exists(DEV_PATH):
-            print(f"⚠️ Diretório {DEV_PATH} não encontrado. Nenhum dispositivo conectado")
+        if not os.path.exists(DEV_PATH):            
             return None
 
         dispositivos = os.listdir(DEV_PATH)
@@ -114,7 +113,7 @@ class app_serial():
                 except Exception as e:
                     print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - ❌Erro ao abrir a porta serial: {e}")
 
-            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 🔄Dispositivo não encontrado. Tentando novamente em {INTERVALO_RETRY} segundos...")
+            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 🔄 Dispositivo serial não encontrado. Tentando novamente em {INTERVALO_RETRY} segundos...")
             time.sleep(INTERVALO_RETRY)
 
     def read_serial(self):
