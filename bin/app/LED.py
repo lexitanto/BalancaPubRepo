@@ -3,7 +3,7 @@ import time
 import sys
 
 class LEDController:
-    def __init__(self, pin=17):
+    def __init__(self, pin=21):
         self.led_pin = pin
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
