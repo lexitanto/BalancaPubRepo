@@ -33,7 +33,6 @@ class app_serial():
         global DEVICE_MODEL
 
         if os.path.exists(SERIAL_FILE):
-            # Se o arquivo existe, lê o número serial armazenado
             with open(SERIAL_FILE, 'r') as f:
                 NUMERO_EQUIPAMENTO = f.read().strip()
             print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Numero do equipamento carregado: {NUMERO_EQUIPAMENTO}")
@@ -61,9 +60,6 @@ class app_serial():
             else:
                 print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro: Não foi possível obter o número serial da CPU.")
 
-    def get_equipamento(self):
-        return getpass.getuser()
-
     def get_rpi_serial(self):        
         try:
             with open("/proc/cpuinfo", "r") as f:
@@ -86,16 +82,16 @@ class app_serial():
             print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro ao ler o número de série: {e}")
             return None
 
-    def find_device(self):
+    def find_profilic(self):
         dispositivos = os.listdir(DEV_PATH)
         for dev in dispositivos:
             if PROLIFIC_PADRAO in dev:
-                return os.path.join(DEV_PATH, dev)  # Retorna o caminho completo
+                return os.path.join(DEV_PATH, dev)
         return None
 
     def open_serial(self):
         while True:
-            dispositivo = self.find_device()      
+            dispositivo = self.find_profilic()      
 
             if dispositivo:
                 try:

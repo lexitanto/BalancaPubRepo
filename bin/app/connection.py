@@ -1,18 +1,43 @@
+import os
 import time
 import sqlite3
 
-DB_PATH = "meubanco.db"
+DB_PATH = "/opt/BalancaPubRepo/data/meubanco.db"
 
 class database_connection():
     def __init__(self):
         self.conexao = None
         self.cursor = None
+        self.ensure_db_exists()
 
     def __enter__(self):
         self.connect_to_db()
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.close_connection()
+
+    def ensure_db_exists(self):
+        if not os.path.exists(DB_PATH):
+            print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - Banco de dados não encontrado, criando banco...")
+            self.create_db()
+
+    def create_db(self):
+        try:
+            self.conexao = sqlite3.connect(DB_PATH)
+            self.cursor = self.conexao.cursor()
+            self.cursor.execute("""
+                CREATE TABLE IF NOT EXISTS TB_UltimasTransmissoes (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    data TEXT
+                );
+            """)
+            self.commit()
+            print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - Banco de dados e tabela criados com sucesso.")
+        except sqlite3.Error as e:
+            print(f"❌ Erro ao criar o banco de dados: {e}")
+        finally:
+            if self.conexao:
+                self.conexao.close()
 
     def connect_to_db(self):
         while True:

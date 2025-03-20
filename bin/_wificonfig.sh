@@ -42,7 +42,6 @@ EOF
             echo "Arquivo wifi_setup.txt não encontrado. Pulando partição."
         fi
 
-        # Desmontar partição antes de finalizar
         umount "$MOUNT_POINT"
         echo "Partição $1 processada e desmontada."
     else
