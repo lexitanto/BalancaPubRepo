@@ -98,6 +98,7 @@ class app_serial():
             dispositivo = self.find_profilic()      
 
             if dispositivo:
+                LED.desligar_led()
                 try:
                     self.serial_port.port = dispositivo
                     self.serial_port.baudrate = 9600
@@ -113,6 +114,7 @@ class app_serial():
                 except Exception as e:
                     print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - ❌Erro ao abrir a porta serial: {e}")
 
+            LED.piscar_led()
             print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 🔄 Dispositivo serial não encontrado. Tentando novamente em {INTERVALO_RETRY} segundos...")
             time.sleep(INTERVALO_RETRY)
 
