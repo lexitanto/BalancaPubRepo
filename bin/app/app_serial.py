@@ -3,7 +3,7 @@ import time
 import serial
 import getpass
 import requests
-import RPi.GPIO as GPIO
+from LED import LEDController
 from datetime import datetime
 from connection import database_connection
 
@@ -20,7 +20,7 @@ URL_SERVER = 'https://9271-170-80-64-72.ngrok-free.app/IoT/Balanca'
 URL_PAYLOAD = '/payload'
 URL_EQUIPAMENTO = '/check_equipamento'
 DB = database_connection()
-
+LED = LEDController()
 
 class app_serial():
     def __init__(self):
@@ -131,10 +131,12 @@ class app_serial():
             print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Leitura interrompida pelo usuário.")    
 
     def interpret_serial(self, linha, evento_balanca): 
+        LED.acender_led()
         if '[h0][g0]' in linha:
             self.process_load(linha, evento_balanca)
         else:
             self.process_print(linha, evento_balanca)
+        LED.desligar_led()
 
     def process_load(self, linha, evento_balanca):
         print(f"Linha de CARREGAMENTO recebida: {linha}")
