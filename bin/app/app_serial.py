@@ -3,6 +3,7 @@ import time
 import serial
 import getpass
 import requests
+import RPi.GPIO as GPIO
 from datetime import datetime
 from connection import database_connection
 
