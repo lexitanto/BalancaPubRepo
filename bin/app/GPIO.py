@@ -5,7 +5,7 @@ import time
 GPIO.setmode(GPIO.BCM)  
 
 # Define os pinos
-LED_PIN = 18
+LED_PIN = 21
 
 # Configuração dos pinos
 GPIO.setup(LED_PIN, GPIO.OUT)       # Saída para LED
