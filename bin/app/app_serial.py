@@ -84,6 +84,10 @@ class app_serial():
             return None
 
     def find_profilic(self):
+        if not os.path.exists(DEV_PATH):
+            print(f"⚠️ Diretório {DEV_PATH} não encontrado. Nenhum dispositivo conectado")
+            return None
+
         dispositivos = os.listdir(DEV_PATH)
         for dev in dispositivos:
             if PROLIFIC_PADRAO in dev:
