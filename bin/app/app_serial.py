@@ -35,8 +35,8 @@ class app_serial():
 
         if os.path.exists(SERIAL_FILE):
             with open(SERIAL_FILE, 'r') as f:
-                NUMERO_EQUIPAMENTO = f.read().strip()
-            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Numero do equipamento carregado: {NUMERO_EQUIPAMENTO}")
+                NUMERO_SERIAL = f.read().strip()
+            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Numero do equipamento carregado: {NUMERO_SERIAL}")
         else:
             CPU_NUMBER = self.get_rpi_serial()
             DEVICE_MODEL = self.get_model()
@@ -46,12 +46,12 @@ class app_serial():
                     texto_byte = bytes(string_dados, 'utf-8')
                     response = self.POST_to_server(texto_byte, URL_EQUIPAMENTO)
                     if response:
-                        NUMERO_EQUIPAMENTO = response.get("equipamento")
+                        NUMERO_SERIAL = response.get("equipamento")
 
-                        if NUMERO_EQUIPAMENTO:
+                        if NUMERO_SERIAL:
                             with open(SERIAL_FILE, 'w') as f:
-                                f.write(NUMERO_EQUIPAMENTO)
-                            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Novo número serial obtido e salvo: {NUMERO_EQUIPAMENTO}")
+                                f.write(NUMERO_SERIAL)
+                            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Novo número serial obtido e salvo: {NUMERO_SERIAL}")
                         else:
                             print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro: Nenhum número serial retornado pela API.")
 
