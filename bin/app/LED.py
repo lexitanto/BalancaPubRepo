@@ -18,6 +18,8 @@ class LEDController:
                 GPIO.output(self.led_pin, GPIO.LOW)
                 time.sleep(intervalo)
         except KeyboardInterrupt:
+            print("\nInterrompido pelo usuário. Limpando GPIO...")
+        finally:
             self.cleanup()
     
     def acender_led(self):
@@ -31,11 +33,20 @@ class LEDController:
     def cleanup(self):
         """Libera os recursos do GPIO."""
         GPIO.cleanup()
+        print("GPIO liberado.")
 
 # Inicia o controle do LED
 if __name__ == "__main__":
     controller = LEDController()
-    if len(sys.argv) > 1 and sys.argv[1] == "piscar":
-        controller.piscar_led()  # Começa a piscar o LED
-    else:
-        controller.acender_led()  # Mantém o LED aceso
+    try:
+        if len(sys.argv) > 1 and sys.argv[1] == "piscar":
+            controller.piscar_led()  # Começa a piscar o LED
+        else:
+            controller.acender_led()  # Mantém o LED aceso
+            print("Pressione Ctrl+C para sair.")
+            while True:
+                time.sleep(1)  # Mantém o programa rodando
+    except KeyboardInterrupt:
+        print("\nSaindo...")
+    finally:
+        controller.cleanup()
