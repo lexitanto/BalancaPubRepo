@@ -10,7 +10,7 @@ class LEDController:
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
-        GPIO.setup(self.led_pin, GPIO.OUT)
+        GPIO.setup(self.led_pin, GPIO.OUT) 
 
     def _piscar_led(self, intervalo=1):
         while self.blinking:

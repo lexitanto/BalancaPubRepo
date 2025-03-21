@@ -10,7 +10,7 @@ DEV_PATH = '/dev/serial/by-id'
 GPS_FILE = '/tmp/gps_data.txt'
 INTERVALO_RETRY = 60
 
-class GPS:
+class gps():
     def __init__(self):
         self.serial_port = serial.Serial()
         self.find_and_open_serial()
