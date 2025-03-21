@@ -58,7 +58,7 @@ class led():
         print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - [LED] GPIO limpo e LEDs desligados.")
 
     def monitor(self, intervalo=1):
-        while self.running:
+        while True:
             if not self._service_is_running():
                 self.start_blinking(intervalo=intervalo)
             else:
