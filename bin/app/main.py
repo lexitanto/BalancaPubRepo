@@ -6,13 +6,13 @@ from balanca_module import balanca
 from led_module import led
 
 def main():
-    gps = gps()
-    balanca = balanca()
-    led = led()
+    GPS = gps()
+    BALANCA = balanca()
+    LED = led()
 
-    gps_thread = threading.Thread(target=gps.run, daemon=True)
-    balanca_thread = threading.Thread(target=balanca.run, daemon=True)
-    led_thread = threading.Thread(target=led.run, daemon=True)
+    gps_thread = threading.Thread(target=GPS.run, daemon=True)
+    balanca_thread = threading.Thread(target=BALANCA.run, daemon=True)
+    led_thread = threading.Thread(target=LED.monitor, daemon=True)
 
     gps_thread.start()
     balanca_thread.start()

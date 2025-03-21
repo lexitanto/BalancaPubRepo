@@ -5,13 +5,13 @@ import getpass
 import requests
 from LED import LEDController
 from datetime import datetime
-from connection import database_connection
+from bin.app.connection_module import database_connection
 
 #Constantes
 CPU_NUMBER = ''
 NUMERO_SERIAL = ''
 DEVICE_MODEL = ''
-SERIAL_FILE = '/etc/device_serial'
+DEVICE_PATH = '/etc/device_id'
 MAX_TENTATIVAS = 5        
 INTERVALO_RETRY = 60
 PROLIFIC_PADRAO = 'usb-Prolific_Technology_Inc._USB-Serial_Controller'
@@ -29,14 +29,12 @@ class app_serial():
         self.open_serial()
         
     def check_equipamento(self):
-        global NUMERO_SERIAL
-        global CPU_NUMBER
-        global DEVICE_MODEL
+        global NUMERO_SERIAL, CPU_NUMBER, DEVICE_MODEL
 
-        if os.path.exists(SERIAL_FILE):
-            with open(SERIAL_FILE, 'r') as f:
+        if os.path.exists(DEVICE_PATH):
+            with open(DEVICE_PATH, 'r') as f:
                 NUMERO_SERIAL = f.read().strip()
-            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Numero do equipamento carregado: {NUMERO_SERIAL}")
+            print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Número do equipamento carregado: {NUMERO_SERIAL}")
         else:
             CPU_NUMBER = self.get_rpi_serial()
             DEVICE_MODEL = self.get_model()
@@ -47,17 +45,14 @@ class app_serial():
                     response = self.POST_to_server(texto_byte, URL_EQUIPAMENTO)
                     if response:
                         NUMERO_SERIAL = response.get("equipamento")
-
                         if NUMERO_SERIAL:
-                            with open(SERIAL_FILE, 'w') as f:
+                            with open(DEVICE_PATH, 'w') as f:
                                 f.write(NUMERO_SERIAL)
                             print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Novo número serial obtido e salvo: {NUMERO_SERIAL}")
                         else:
                             print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro: Nenhum número serial retornado pela API.")
-
                 except requests.RequestException as e:
-                    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro ao fazer a requisição para a API: {e}")
-
+                    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro na requisição para a API: {e}")
             else:
                 print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Erro: Não foi possível obter o número serial da CPU.")
 

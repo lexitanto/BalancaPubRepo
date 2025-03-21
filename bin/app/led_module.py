@@ -1,66 +1,70 @@
-# led_module.py
-import RPi.GPIO as GPIO
+import os
 import time
+import threading
+import RPi.GPIO as GPIO
 from datetime import datetime
 
 class led():
-    def __init__(self, pin=21):
-        self.led_pin = pin
-        self.blinking = False
+    def __init__(self, pin_vermelho=16, pin_amarelo=20, pin_verde=21):        
+        self.led_internet = pin_vermelho
+        self.led_config_ext = pin_amarelo
+        self.led_evento_balanca = pin_verde
+        self.blinking = {self.led_internet: False, self.led_config_ext: False, self.led_evento_balanca: False}
         self.setup_gpio()
 
     def setup_gpio(self):
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
-        GPIO.setup(self.led_pin, GPIO.OUT)
+        GPIO.setup(self.led_internet, GPIO.OUT)
+        GPIO.setup(self.led_config_ext, GPIO.OUT)        
+        GPIO.setup(self.led_evento_balanca, GPIO.OUT)
 
-    def _piscar_led(self, intervalo=1):
-        while self.blinking:
-            GPIO.output(self.led_pin, GPIO.HIGH)
+    def _piscar_led(self, led, intervalo=1):
+        while self.blinking[led]:
+            GPIO.output(led, GPIO.HIGH)
             time.sleep(intervalo)
-            GPIO.output(self.led_pin, GPIO.LOW)
+            GPIO.output(led, GPIO.LOW)
             time.sleep(intervalo)
+
+    def start_blinking(self, led, intervalo=1):
+        if not self.blinking[led]:
+            self.blinking[led] = True
+            t = threading.Thread(target=self._piscar_led, args=(led, intervalo), daemon=True)
+            t.start()
+
+    def stop_blinking(self, led):
+        self.blinking[led] = False
+
+    def acender_led(self, led):
+        self.stop_blinking(led)
+        GPIO.output(led, GPIO.HIGH)
+
+    def desligar_led(self, led):
+        self.stop_blinking(led)
+        GPIO.output(led, GPIO.LOW)
 
     def run(self):
-        """
-        Exemplo de loop do LED.
-        Aqui você pode, por exemplo, piscar o LED enquanto nenhum dado válido for recebido,
-        ou seguir outro critério definido pela aplicação.
-        """
         print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - [LED] Loop iniciado.")
-        # Exemplo: piscar o LED a cada 0.5 segundos.
-        self.start_blinking(intervalo=0.5)
         try:
             while True:
-                # Este loop pode ser usado para atualizar o estado do LED com base em eventos externos.
                 time.sleep(1)
         except KeyboardInterrupt:
             self.cleanup()
 
-    def start_blinking(self, intervalo=1):
-        """Inicia o piscar do LED em uma thread separada (se necessário)."""
-        if not self.blinking:
-            self.blinking = True
-            from threading import Thread
-            t = Thread(target=self._piscar_led, args=(intervalo,), daemon=True)
-            t.start()
-
-    def acender_led(self):
-        """Acende o LED de forma contínua."""
-        self.stop_blinking()
-        GPIO.output(self.led_pin, GPIO.HIGH)
-
-    def desligar_led(self):
-        """Desliga o LED."""
-        self.stop_blinking()
-        GPIO.output(self.led_pin, GPIO.LOW)
-
-    def stop_blinking(self):
-        """Para o piscar do LED."""
-        self.blinking = False
-
     def cleanup(self):
-        """Finaliza e limpa a configuração do GPIO."""
-        self.stop_blinking()
+        for led in self.blinking.keys():
+            self.stop_blinking(led)
         GPIO.cleanup()
-        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - [LED] GPIO limpo e LED desligado.")
+        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - [LED] GPIO limpo e LEDs desligados.")
+
+    def monitor(self, intervalo=1):
+        while self.running:
+            if not self._service_is_running():
+                self.start_blinking(intervalo=intervalo)
+            else:
+                self.stop_blinking()
+            time.sleep(intervalo)
+
+    def _service_is_running(self):
+        status = os.system(f"systemctl is-active --quiet monitor.service")
+        return status == 0

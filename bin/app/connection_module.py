@@ -18,7 +18,7 @@ class database_connection():
 
     def ensure_db_exists(self):
         if not os.path.exists(DB_PATH):
-            print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - Banco de dados não encontrado, criando banco...")
+            print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - [Banco] Banco de dados não encontrado, criando banco...")
             self.create_db()
 
     def create_db(self):
@@ -32,9 +32,9 @@ class database_connection():
                 );
             """)
             self.commit()
-            print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - Banco de dados e tabela criados com sucesso.")
+            print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - [Banco] Banco de dados e tabela criados com sucesso.")
         except sqlite3.Error as e:
-            print(f"❌ Erro ao criar o banco de dados: {e}")
+            print(f"[Banco] ❌ Erro ao criar o banco de dados: {e}")
         finally:
             if self.conexao:
                 self.conexao.close()
@@ -44,11 +44,11 @@ class database_connection():
             try:
                 self.conexao = sqlite3.connect(DB_PATH)
                 self.cursor = self.conexao.cursor()
-                print("✅ Conexão com o banco estabelecida.")
+                print("[Banco] ✅ Conexão com o banco estabelecida.")
                 break
             except sqlite3.Error as e:
-                print(f"❌ Erro ao conectar ao banco: {e}")
-                print(f"🔄 Tentando novamente em 90 segundos...")
+                print(f"[Banco] ❌ Erro ao conectar ao banco: {e}")
+                print(f"[Banco] 🔄 Tentando novamente em 90 segundos...")
                 time.sleep(90)
 
     def close_connection(self):
@@ -64,10 +64,10 @@ class database_connection():
                 VALUES (?)
                 """, (data,))
             self.commit()  # Confirma a operação
-            print(f"⚠️ Última trasmissão '{data.decode('utf-8')}' salva no banco!")
+            print(f"[Banco] ⚠️ Última trasmissão '{data.decode('utf-8')}' salva no banco!")
 
         except sqlite3.Error as e:
-            print(f"❌ Erro ao salvar localização: {e}")
+            print(f"[Banco] ❌ Erro ao salvar localização: {e}")
 
     def fetch_data(self):
         try:
@@ -76,7 +76,7 @@ class database_connection():
             return registros
         
         except sqlite3.Error as e:
-            print(f"❌ Erro ao buscar dados: {e}")
+            print(f"[Banco] ❌ Erro ao buscar dados: {e}")
             return None
     
     def delete_at_index(self, id):
@@ -85,10 +85,10 @@ class database_connection():
                 DELETE FROM TB_UltimasTransmissoes 
                 WHERE id = ? """, (id,))
             self.commit()
-            print(f"⚠️ Indíce [{id}] deletado da tabela.")
+            print(f"[Banco] ⚠️ Indíce [{id}] deletado da tabela.")
 
         except sqlite3.Error as e:
-            print(f"❌ Erro ao deletar na tabela: {e}")
+            print(f"[Banco] ❌ Erro ao deletar na tabela: {e}")
 
     def commit(self):
 	    self.conexao.commit()   
