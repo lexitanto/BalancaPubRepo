@@ -71,7 +71,7 @@ class database_connection():
 
     def fetch_data(self):
         try:
-            self.cursor.execute("SELECT * FROM TB_UltimasTransmissoes")  # Pega todos os registros
+            self.cursor.execute("SELECT * FROM TB_UltimasTransmissoes;")  # Pega todos os registros
             registros = self.cursor.fetchall()  # Retorna uma lista de tuplas        
             return registros
         
