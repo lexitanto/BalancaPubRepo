@@ -271,7 +271,7 @@ class balanca():
 
     def fetch_data(self):
         with DB:
-            registros = DB.connect_to_db()
+            registros = DB.fetch_data()
             return registros
         
     def delete_data(self, id):
