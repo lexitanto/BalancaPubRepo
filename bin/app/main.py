@@ -8,15 +8,15 @@ from led_module import led
 def main():
     # GPS = gps()
     BALANCA = balanca()
-    LED = led()
+    # LED = led()
 
     # gps_thread = threading.Thread(target=GPS.run, daemon=True)
     balanca_thread = threading.Thread(target=BALANCA.run, daemon=True)
-    led_thread = threading.Thread(target=LED.monitor, daemon=True)
+    # led_thread = threading.Thread(target=LED.monitor, daemon=True)
 
     # gps_thread.start()
     balanca_thread.start()
-    led_thread.start()
+    # led_thread.start()
 
     try:
         while True:

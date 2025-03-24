@@ -62,7 +62,7 @@ class led():
             if not self._service_is_running():
                 self.start_blinking(self.led_internet, intervalo=intervalo)
             else:
-                self.stop_blinking()
+                self.stop_blinking(self.led_internet)
             time.sleep(intervalo)
 
     def _service_is_running(self):
