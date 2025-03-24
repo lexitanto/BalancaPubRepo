@@ -78,7 +78,7 @@ class balanca():
             return None
 
     def find_and_open_serial(self):
-        LED_CONTROL.start_blinking(LED_CONTROL.led_config_ext, intervalo=1)
+        LED_CONTROL.start_blinking(LED_CONTROL.led_config_ext, intervalo=1.5)
         while True:
             dispositivo = self.find_prolific()
             if dispositivo:

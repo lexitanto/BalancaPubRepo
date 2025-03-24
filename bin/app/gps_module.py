@@ -3,12 +3,15 @@ import os
 import time
 import serial
 import pynmea2
+from led_module import led
 from datetime import datetime
 
 GPS_PADRAO = 'usb-u-blox_AG_-_www.u-blox.com_u-blox_7'
 DEV_PATH = '/dev/serial/by-id'
 GPS_FILE = '/tmp/gps_data.txt'
 INTERVALO_RETRY = 60
+LED_CONTROL = led()
+
 
 class gps():
     def __init__(self):
@@ -16,9 +19,11 @@ class gps():
         self.find_and_open_serial()
 
     def find_and_open_serial(self):
+        LED_CONTROL.start_blinking(LED_CONTROL.led_config_ext, intervalo=0.5)
         while True:
             dispositivo = self.find_ublocx()
             if dispositivo:
+                LED_CONTROL.stop_blinking(LED_CONTROL.led_config_ext)
                 try:
                     self.serial_port.port = dispositivo
                     self.serial_port.baudrate = 9600
@@ -60,7 +65,8 @@ class gps():
                 alt = msg.altitude
                 hora = msg.timestamp.strftime('%H:%M:%S')
                 dados = f"{datetime.now().strftime('%Y-%m-%d')} {hora} | Lat: {lat} | Lon: {lon} | Alt: {alt}m\n"
-                with open(GPS_FILE, 'w') as f:
+                with open(GPS_FILE, 'a') as f:
+                    f.write(msg)
                     f.write(dados)
                 print(f"[GPS] Dados válidos gravados: {dados.strip()}")
             else:
