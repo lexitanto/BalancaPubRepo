@@ -237,6 +237,8 @@ class balanca():
 
         except Exception as e:
             print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - [Balanca] Erro ao enviar dados ao servidor: {e}")
+            with open(LOG_FILE, 'a') as f:
+                f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - [Retransmissao] {e}")
 
     def POST_check_equipamento(self, data, api_url):
         tentativas = 0
