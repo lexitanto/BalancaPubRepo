@@ -3,7 +3,7 @@
 REPO_PATH="/opt/BalancaPubRepo"
 CMD_INICIAR="python3 $REPO_PATH/bin/app/main.py"
 LOG_FILE="/tmp/monitor.log"
-onehour=3600
+onehour=5
 
 while true; do
     if ! pgrep -f "python3 $REPO_PATH/bin/app/main.py" > /dev/null; then
