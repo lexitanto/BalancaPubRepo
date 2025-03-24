@@ -19,6 +19,7 @@ URL_PAYLOAD = '/payload'
 URL_EQUIPAMENTO = '/check_equipamento'
 DB = database_connection()
 LED_CONTROL = led()
+LOG_FILE = "/tmp/balanca.log"
 
 
 class balanca():
@@ -223,6 +224,9 @@ class balanca():
             headers = {"Content-Type": "application/octet-stream"}
             endpoint = URL_SERVER + api_url
             response = requests.post(endpoint, data=data, headers=headers)
+            with open(LOG_FILE, 'a') as f:
+                f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - [Retransmissao] {response}")
+                    
             json_data = response.json() if response.headers.get("Content-Type") == "application/json" else None
 
             if response.ok:
