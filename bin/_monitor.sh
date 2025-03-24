@@ -1,19 +1,18 @@
 #!/bin/bash
 
 REPO_PATH="/opt/BalancaPubRepo"
-CMD_INICIAR="python3 $REPO_PATH/bin/app/index.py"
+CMD_INICIAR="python3 $REPO_PATH/bin/app/main.py"
+LOG_FILE="/tmp/monitor.log"
+onehour=3600
 
-echo "$(date '+%Y-%m-%d %H:%M:%S') - Verificando e atualizando o repositório..." | tee -a /tmp/monitor.log
+echo "$(date '+%Y-%m-%d %H:%M:%S') - [Monitor] Monitor iniciado" | tee -a "$LOG_FILE"
 
-# Atualiza o repositório
-git -C $REPO_PATH fetch origin
-
-# Força a atualização do repositório local para o estado remoto, ignorando quaisquer mudanças locais
-git -C $REPO_PATH reset --hard origin/main
-
-if ! pgrep -f "python3 $REPO_PATH/bin/app/index.py" > /dev/null; then
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - Iniciando aplicação..." | tee -a /tmp/monitor.log
-    $CMD_INICIAR
-else
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - A aplicação já está rodando." | tee -a /tmp/monitor.log
-fi
+while true; do
+    if ! pgrep -f "python3 $REPO_PATH/bin/app/main.py" > /dev/null; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') - [Monitor] Iniciando aplicação..." | tee -a "$LOG_FILE"
+        $CMD_INICIAR &
+    else
+        echo "$(date '+%Y-%m-%d %H:%M:%S') - [Monitor] Connection is alive" | tee -a "$LOG_FILE"
+    fi
+    sleep "$onehour"
+done
