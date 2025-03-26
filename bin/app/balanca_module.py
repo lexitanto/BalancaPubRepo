@@ -14,7 +14,7 @@ MAX_TENTATIVAS = 5
 PROLIFIC_PADRAO = 'usb-Prolific_Technology_Inc._USB-Serial_Controller'
 DEV_PATH = '/dev/serial/by-id'
 DEVICE_PATH = '/etc/device_id'
-URL_SERVER = 'https://erp.sgtrack.com.br//IoT/Balanca'
+URL_SERVER = 'https://7948-170-80-64-72.ngrok-free.app/IoT/Balanca'
 URL_PAYLOAD = '/payload'
 URL_EQUIPAMENTO = '/check_equipamento'
 DB = database_connection()
@@ -262,7 +262,7 @@ class balanca():
             except Exception as e:
                 tentativas += 1
                 print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - [Balanca] ❌ Erro ao checar o equipamento: {e}")
-                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - [Balanca] Tentativa {tentativas}/{MAX_TENTATIVAS}. Nova tentativa em {INTERVALO_RETRY} segundos...")
+                print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - [Balanca] Tentativa {tentativas}. Nova tentativa em {INTERVALO_RETRY} segundos...")
                 time.sleep(INTERVALO_RETRY)
 
     def salvar_ultimaTransmissao(self, data):
