@@ -1,7 +1,12 @@
 #!/bin/bash
 
 REPO_PATH="/opt/BalancaPubRepo"
-LOG_FILE="/tmp/update_repo.log"
+. "$REPO_PATH/bin/config.sh"
+
+while ! ping -c 1 8.8.8.8 &> /dev/null; do
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - [Update] Aguardando conexão com a internet..."
+    sleep 5
+done
 
 echo "$(date '+%Y-%m-%d %H:%M:%S') - [Update] Atualizando repositório..." | tee -a "$LOG_FILE"
 
