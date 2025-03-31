@@ -44,7 +44,7 @@ EOF
 GITFETCH_SERVICE="gitfetch.service"
 GITFETCH_SERVICE_PATH="/etc/systemd/system/"
 GITFETCH_SCRIPT="gitfetch.sh"
-GITFETCH_SCRIPT_PATH="/opt/BalancaTestes/bin/"
+GITFETCH_SCRIPT_PATH="${DIR}/bin/"
 
 sudo chmod +x "${GITFETCH_SCRIPT_PATH}${GITFETCH_SCRIPT}"
 
