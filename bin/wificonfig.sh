@@ -1,15 +1,21 @@
 #!/bin/bash
 
-MOUNT_POINT="/mnt/usb_wifi"
+MOUNT_POINT="/mnt/usb_mount"
 CONFIG_FILE="wifi_setup.txt"
 DEVICE="/dev/$1"
+
 
 (
 
     flock -w 10 200 || exit 1
-
+    
     sudo systemctl daemon-reload
     [ ! -d "$MOUNT_POINT" ] && mkdir -p "$MOUNT_POINT"
+
+    if mount | grep -q "$MOUNT_POINT"; then
+        sudo umount "$MOUNT_POINT"
+        sleep 1
+    fi
 
     if mount -o ro "$DEVICE" "$MOUNT_POINT"; then
         WIFI_CONFIG="$MOUNT_POINT/wifi_setup.txt"
@@ -47,6 +53,5 @@ EOF
     else
         echo "Falha ao montar /dev/$1"
     fi
-
 
 ) 200>/tmp/wifi_script.lock
