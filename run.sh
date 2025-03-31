@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR="/opt/BalancaPubRebo"
+DIR="/opt/BalancaPubRepo"
 sudo apt update && sudo apt upgrade -y 
 
 MONITOR_SERVICE="monitor.service"
