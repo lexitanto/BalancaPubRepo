@@ -45,37 +45,36 @@ sudo systemctl daemon-reload
 sudo systemctl enable "$MONITOR_SERVICE"
 sudo udevadm control --reload-rules
 
+# Atualizaçções passadas 
+#GIT FETCH FOI IMPLEMENTADO NO .img
+
+GITFETCH_SERVICE="gitfetch.service"
+GITFETCH_SERVICE_PATH="/etc/systemd/system/"
+GITFETCH_SCRIPT="gitfetch.sh"
+GITFETCH_SCRIPT_PATH="/opt/BalancaTestes/bin/"
+
+sudo chmod +x "${GITFETCH_SCRIPT_PATH}${GITFETCH_SCRIPT}"
+
+sudo tee "${GITFETCH_SERVICE_PATH}${GITFETCH_SERVICE}" > /dev/null <<EOF
+[Unit]
+Description=Atualiza o repositório em todo boot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStartPre=/bin/chmod +x ${GITFETCH_SCRIPT_PATH}${GITFETCH_SCRIPT}
+ExecStart=${GITFETCH_SCRIPT_PATH}${GITFETCH_SCRIPT}
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
 echo "✅ Serviço monitor.service criado e iniciado com sucesso!"
 echo "✅ Rules pendrive.rules criadas com sucesso!"
-
+echo "✅ Git fetch criado com sucesso!"
 echo "O sistema será reiniciado agora!"
 sleep 3
 
 sudo reboot
-
-
-# Atualizaçções passadas 
-#GIT FETCH FOI IMPLEMENTADO NO .img
-
-# GITFETCH_SERVICE="gitfetch.service"
-# GITFETCH_SERVICE_PATH="/etc/systemd/system/"
-# GITFETCH_SCRIPT="gitfetch.sh"
-# GITFETCH_SCRIPT_PATH="/opt/BalancaTestes/bin/"
-
-# sudo chmod +x "${GITFETCH_SCRIPT_PATH}${GITFETCH_SCRIPT}"
-
-# sudo tee "${GITFETCH_SERVICE_PATH}${GITFETCH_SERVICE}" > /dev/null <<EOF
-# [Unit]
-# Description=Atualiza o repositório em todo boot
-# After=network-online.target
-# Wants=network-online.target
-
-# [Service]
-# Type=oneshot
-# User=root
-# ExecStartPre=/bin/chmod +x ${GITFETCH_SCRIPT_PATH}${GITFETCH_SCRIPT}
-# ExecStart=${GITFETCH_SCRIPT_PATH}${GITFETCH_SCRIPT}
-
-# [Install]
-# WantedBy=multi-user.target
-# EOF
