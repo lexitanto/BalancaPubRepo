@@ -41,13 +41,6 @@ sudo tee "$PENDRIVE_RULE_PATH$PENDRIVE_RULE" > /dev/null <<EOF
 SUBSYSTEM=="block", ACTION=="add", ENV{ID_FS_TYPE}!="", RUN+="/bin/bash $PENDRIVE_SCRIPT_PATH %k >> /tmp/wificonfig.log 2>&1"
 EOF
 
-sudo systemctl daemon-reload
-sudo systemctl enable "$MONITOR_SERVICE"
-sudo udevadm control --reload-rules
-
-# Atualizaçções passadas 
-#GIT FETCH FOI IMPLEMENTADO NO .img
-
 GITFETCH_SERVICE="gitfetch.service"
 GITFETCH_SERVICE_PATH="/etc/systemd/system/"
 GITFETCH_SCRIPT="gitfetch.sh"
@@ -70,6 +63,13 @@ ExecStart=${GITFETCH_SCRIPT_PATH}${GITFETCH_SCRIPT}
 [Install]
 WantedBy=multi-user.target
 EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable "$MONITOR_SERVICE"
+sudo systemctl enable "$GITFETCH_SERVICE"
+sudo udevadm control --reload-rules
+
+
 
 echo "✅ Serviço monitor.service criado e iniciado com sucesso!"
 echo "✅ Rules pendrive.rules criadas com sucesso!"
