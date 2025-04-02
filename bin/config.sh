@@ -1,4 +1,6 @@
 #configuração de variáveis globais
+#!/bin/bash
+
 
 REPO_PATH="/opt/BalancaPubRepo"
 CMD_INICIAR="python3 $REPO_PATH/bin/app/main.py"
