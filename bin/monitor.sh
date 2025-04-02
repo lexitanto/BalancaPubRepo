@@ -1,7 +1,10 @@
 #!/bin/bash
 
 REPO_PATH="/opt/BalancaPubRepo"
-. "$REPO_PATH/bin/config.sh"
+REPO_PATH="/opt/BalancaPubRepo"
+CMD_INICIAR="python3 $REPO_PATH/bin/app/main.py"
+LOG_FILE="/tmp/balanca.log"
+ONEHOUR=3600
 
 while true;do
 
